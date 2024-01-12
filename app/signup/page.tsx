@@ -15,8 +15,6 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-// Database
-import supabase from '@/utils/supabase';
 // Zod / form
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -50,11 +48,11 @@ export default function Login() {
   });
 
   async function handleSignUp(values: z.infer<typeof formSchema>) {
-    const { data, error } = await supabase.auth.signUp({
-      email: values.email,
-      password: values.password,
-    });
-    router.refresh();
+    // const { data, error } = await supabase.auth.signUp({
+    //   email: values.email,
+    //   password: values.password,
+    // });
+    // router.refresh();
   }
 
   return (

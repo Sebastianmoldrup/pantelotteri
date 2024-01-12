@@ -30,7 +30,7 @@
     "middleware.js",
     "utils/supabaseReqResClient.js",
     "utils/supabaseAppRouterClient.js",
-    "utils/supabase.js"
+    "utils/supabase.ts"
   ],
   "exclude": ["node_modules"]
 }

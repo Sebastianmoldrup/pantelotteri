@@ -14,8 +14,6 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-// Database
-import supabase from '@/utils/supabase';
 // Zod / form
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -47,16 +45,16 @@ export default function Login() {
 
   // Submit handler
   async function handleLogIn(values: z.infer<typeof formSchema>) {
-    console.log(values);
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: values.email,
-      password: values.password,
-    });
-    if (data) {
-      console.log(data);
-    } else if (error) {
-      console.log(error);
-    } else return;
+    // console.log(values);
+    // const { data, error } = await supabase.auth.signInWithPassword({
+    //   email: values.email,
+    //   password: values.password,
+    // });
+    // if (data) {
+    //   console.log(data);
+    // } else if (error) {
+    //   console.log(error);
+    // } else return;
   }
 
   return (
