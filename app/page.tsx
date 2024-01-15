@@ -1,23 +1,26 @@
 'use client';
+import { createClient } from '@/utils/supabase';
 import { useState, useEffect } from 'react';
-import createSupabaseServerClient from '../utils/supabase';
 import Image from 'next/image';
 
 export default function Home() {
-  const supabase = createSupabaseServerClient();
-  console.log(supabase);
-
+  const [users, setUsers] = useState<Array>([]);
   useEffect(() => {
-    const getData = async () => {
-      const { data, error } = await supabase.from('users').select();
-      if (data) return console.log(data);
-      else if (error) return console.log(error);
-    };
-
-    getData();
-  });
+    (async () => {
+      const supabase = createClient();
+      console.log(supabase);
+      const { data, error } = await supabase.from('users').select('*');
+      if (error) {
+        console.error('Error fetching data:', error);
+        return;
+      } else if (data) {
+        console.log('data exists:', data);
+        data.map((row) => console.log(row.username));
+      }
+    })();
+  }, []);
 
   return (
-    <main className='flex min-h-screen flex-col items-center justify-center main-bg'></main>
+    <main className='flex min-h-screen flex-col items-center justify-center main-bg text-white'></main>
   );
 }
