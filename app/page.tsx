@@ -5,17 +5,19 @@ import Image from 'next/image';
 
 export default function Home() {
   const [users, setUsers] = useState<Array>([]);
+  const supabase = createClient();
   useEffect(() => {
     (async () => {
       const supabase = createClient();
-      console.log(supabase);
       const { data, error } = await supabase.from('users').select('*');
       if (error) {
         console.error('Error fetching data:', error);
         return;
       } else if (data) {
-        console.log('data exists:', data);
-        data.map((row) => console.log(row.username));
+        console.log('data fetched');
+        data.map((row) => console.log(row.email));
+      } else {
+        console.log('no data');
       }
     })();
   }, []);

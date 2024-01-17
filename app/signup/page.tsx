@@ -1,11 +1,13 @@
 'use client';
-// React
-import { useEffect, useState } from 'react';
+// Supabase
+import { createClient } from '@/utils/supabase';
+
 // Nextjs
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+
 // Components
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
   Form,
   FormControl,
@@ -14,26 +16,19 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+
 // Zod / form
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 
 export default function Login() {
-  // States
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
-  // Router
-  const router = useRouter();
-
-  // Form schema
+  // Form value validation
   const formSchema = z.object({
     email: z.string().min(2, {
       message: 'Ugyldig email.',
     }),
-    password: z.string().min(2, {
+    password: z.string().min(6, {
       message: 'Ugyldig passord.',
     }),
   });
@@ -47,19 +42,30 @@ export default function Login() {
     },
   });
 
-  async function handleSignUp(values: z.infer<typeof formSchema>) {
-    // const { data, error } = await supabase.auth.signUp({
-    //   email: values.email,
-    //   password: values.password,
-    // });
-    // router.refresh();
+  // Create supabase client variable
+  const supabase = createClient();
+
+  // Handle signup request
+  async function signUpNewUser(values: z.infer<typeof formSchema>) {
+    const { data, error } = await supabase.auth.signUp({
+      email: values.email,
+      password: values.password,
+    });
+
+    if (error) {
+      console.error('Error signing up:', error);
+    } else if (data) {
+      const { data, error } = await supabase
+        .from('users')
+        .insert([{ email: values.email, password: values.password }]);
+    }
   }
 
   return (
     <main className='flex min-h-screen flex-col items-center justify-center space-y-6 main-bg'>
-      <h1 className='font-bold text-white text-2xl'>Lag ny bruker</h1>
+      <h1 className='font-bold text-white text-2xl'>Registrering</h1>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSignUp)} className='space-y-8'>
+        <form onSubmit={form.handleSubmit(signUpNewUser)} className='space-y-8'>
           <FormField
             control={form.control}
             name='email'
@@ -88,10 +94,10 @@ export default function Login() {
             )}
           />
           <div className='flex justify-between'>
-            <Button type='submit'>Fortsett</Button>
             <Button asChild>
               <Link href='/login'>Tilbake</Link>
             </Button>
+            <Button type='submit'>Registrer</Button>
           </div>
         </form>
       </Form>

@@ -1,8 +1,11 @@
 'use client';
-// React
-import { useEffect, useState } from 'react';
+// Supabase
+import { createClient } from '@/utils/supabase';
+
 // Nextjs
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+
 // Components
 import { Button } from '@/components/ui/button';
 import {
@@ -14,16 +17,13 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+
 // Zod / form
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 
 export default function Login() {
-  // States
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
   // Form schema
   const formSchema = z.object({
     email: z.string().min(2, {
@@ -34,6 +34,9 @@ export default function Login() {
     }),
   });
 
+  // Create supabase client variable
+  const supabase = createClient();
+
   // Form values
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -43,25 +46,32 @@ export default function Login() {
     },
   });
 
+  // Router
+  const router = useRouter();
+
   // Submit handler
-  async function handleLogIn(values: z.infer<typeof formSchema>) {
-    // console.log(values);
-    // const { data, error } = await supabase.auth.signInWithPassword({
-    //   email: values.email,
-    //   password: values.password,
-    // });
-    // if (data) {
-    //   console.log(data);
-    // } else if (error) {
-    //   console.log(error);
-    // } else return;
+  async function signInUser(values: z.infer<typeof formSchema>) {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: values.email,
+      password: values.password,
+    });
+
+    if (error) {
+      console.error(error);
+    } else if (data && data.user.aud === 'authenticated') {
+      // console.log(data);
+      // console.log(data.user.aud);
+      router.push('/');
+    } else {
+      console.log('Feil ved login');
+    }
   }
 
   return (
     <main className='flex min-h-screen flex-col items-center justify-center space-y-6 main-bg'>
       <h1 className='font-bold text-white text-2xl'>Logg inn</h1>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleLogIn)} className='space-y-8'>
+        <form onSubmit={form.handleSubmit(signInUser)} className='space-y-8'>
           <FormField
             control={form.control}
             name='email'
@@ -90,10 +100,10 @@ export default function Login() {
             )}
           />
           <div className='flex justify-between'>
-            <Button type='submit'>Logg inn</Button>
             <Button asChild>
               <Link href='/signup'>Ny bruker</Link>
             </Button>
+            <Button type='submit'>Logg inn</Button>
           </div>
         </form>
       </Form>
