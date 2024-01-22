@@ -2,6 +2,9 @@
 // Supabase
 import { createClient } from '@/utils/supabase';
 
+// React
+import { useState } from 'react';
+
 // Nextjs
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -49,27 +52,45 @@ export default function Login() {
   // Router
   const router = useRouter();
 
+  // State
+  const [loginError, setLoginError] = useState<string>('');
+
   // Submit handler
   async function signInUser(values: z.infer<typeof formSchema>) {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: values.email,
-      password: values.password,
-    });
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: values.email,
+        password: values.password,
+      });
 
-    if (error) {
-      console.error(error);
-    } else if (data && data.user.aud === 'authenticated') {
-      // console.log(data);
-      // console.log(data.user.aud);
-      router.push('/');
-    } else {
-      console.log('Feil ved login');
+      if (error) {
+        throw error;
+      } else if (data && data.user.aud === 'authenticated') {
+        router.push('/');
+      } else {
+        console.log('Feil ved login');
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        if (error.message.includes('Email not confirmed')) {
+          setLoginError('Vennligst bekreft kontoen via email som er tilsendt.');
+        } else {
+          console.error(error);
+        }
+      } else {
+        console.error('Caught an exception that was not an Error instance');
+      }
     }
   }
 
   return (
     <main className='flex min-h-screen flex-col items-center justify-center space-y-6 main-bg'>
       <h1 className='font-bold text-white text-2xl'>Logg inn</h1>
+      {loginError !== '' ? (
+        <div className='text-lg text-white'>{loginError}</div>
+      ) : (
+        ''
+      )}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(signInUser)} className='space-y-8'>
           <FormField
