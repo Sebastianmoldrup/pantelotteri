@@ -3,23 +3,21 @@ import { createClient } from '@/utils/supabase';
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Navigation from '@/components/navigation';
+import QRCode from 'qrcode';
 
 export default function Home() {
-  const [users, setUsers] = useState<Array>([]);
+  const [qrCode, setQrCode] = useState('');
   const supabase = createClient();
+
   useEffect(() => {
     (async () => {
       const supabase = createClient();
-      const { data, error } = await supabase.from('users').select('*');
-      if (error) {
-        console.error('Error fetching data:', error);
-        return;
-      } else if (data) {
-        console.log('data fetched');
-        data.map((row) => console.log(row.email));
-      } else {
-        console.log('no data');
-      }
+
+      const session = supabase.auth.session;
+
+      const { data, error } = await supabase.auth.getUser();
+      console.log(data);
+      console.log(error);
     })();
   }, []);
 
@@ -27,12 +25,18 @@ export default function Home() {
     const { error } = await supabase.auth.signOut();
   }
 
+  const generateQR = async (text) => {
+    try {
+      console.log(await QRCode.toDataURL(text));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+  generateQR('33kd35e');
+
   return (
     <main className='flex flex-col items-center space-y-20 min-h-screen main-bg text-white'>
       <Navigation />
-      <div className='flex items-center justify-center bg-primary w-[150px] h-[150px] rounded-xl rotate-45'>
-        <div className='-rotate-45'>Jackpot</div>
-      </div>
     </main>
   );
 }

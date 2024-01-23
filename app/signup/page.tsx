@@ -29,7 +29,7 @@ import * as z from 'zod';
 export default function Login() {
   // Form value validation
   const formSchema = z.object({
-    email: z.string().min(2, {
+    email: z.string().email({ message: 'Ugyldig email' }).min(2, {
       message: 'Ugyldig email.',
     }),
     password: z.string().min(6, {
@@ -68,7 +68,7 @@ export default function Login() {
         {
           email: values.email,
           password: values.password,
-          user_id: '73d94240-89b4-4f60-b8e6-37de4b483ec9',
+          user_id: userid,
         },
       ]);
       router.push('/login');

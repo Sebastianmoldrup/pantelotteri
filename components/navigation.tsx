@@ -14,21 +14,30 @@ import { HamburgerIcon } from '@/components/icons';
 export default function Navigation() {
   return (
     <nav className='flex justify-between px-4 py-2 w-full'>
-      <h1 className='text-xl font-bold'>Pantelotteri</h1>
+      <h1 className='text-md font-bold'>Norsk pantelotteri</h1>
 
       <Drawer>
         <DrawerTrigger>
           <HamburgerIcon />
         </DrawerTrigger>
+
         <DrawerContent>
           <DrawerHeader>
-            <DrawerTitle>Are you absolutely sure?</DrawerTitle>
-            <DrawerDescription>This action cannot be undone.</DrawerDescription>
+            <DrawerTitle>Din strekkode</DrawerTitle>
+            <DrawerDescription>
+              Bruk denne for å registrere glass og metal avfall
+            </DrawerDescription>
           </DrawerHeader>
+
           <DrawerFooter>
-            <Button>Submit</Button>
+            <div className='flex justify-evenly'>
+              <Button>Spill regler</Button>
+              <Button>Juridisk</Button>
+            </div>
+            <Button>Logg ut</Button>
+
             <DrawerClose>
-              <Button variant='outline'>Cancel</Button>
+              <Button variant='outline'>Lukk</Button>
             </DrawerClose>
           </DrawerFooter>
         </DrawerContent>
