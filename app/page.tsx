@@ -2,6 +2,7 @@
 import { createClient } from '@/utils/supabase';
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import Navigation from '@/components/navigation';
 
 export default function Home() {
   const [users, setUsers] = useState<Array>([]);
@@ -23,6 +24,11 @@ export default function Home() {
   }, []);
 
   return (
-    <main className='flex min-h-screen flex-col items-center justify-center main-bg text-white'></main>
+    <main className='flex flex-col items-center space-y-20 min-h-screen main-bg text-white'>
+      <Navigation />
+      <div className='flex items-center justify-center bg-primary w-[150px] h-[150px] rounded-xl rotate-45'>
+        <div className='-rotate-45'>Jackpot</div>
+      </div>
+    </main>
   );
 }
