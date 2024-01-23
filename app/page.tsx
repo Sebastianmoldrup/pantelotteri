@@ -23,6 +23,10 @@ export default function Home() {
     })();
   }, []);
 
+  async function signOut() {
+    const { error } = await supabase.auth.signOut();
+  }
+
   return (
     <main className='flex flex-col items-center space-y-20 min-h-screen main-bg text-white'>
       <Navigation />

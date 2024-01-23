@@ -4,6 +4,10 @@ import { createClient } from '@/utils/supabase';
 
 // Nextjs
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+
+// UUID
+import { v4 as uuidv4 } from 'uuid';
 
 // Components
 import { Button } from '@/components/ui/button';
@@ -45,19 +49,29 @@ export default function Login() {
   // Create supabase client variable
   const supabase = createClient();
 
+  // Router
+  const router = useRouter();
+
   // Handle signup request
   async function signUpNewUser(values: z.infer<typeof formSchema>) {
     const { data, error } = await supabase.auth.signUp({
       email: values.email,
       password: values.password,
     });
+    console.log('data:', data);
 
     if (error) {
       console.error('Error signing up:', error);
     } else if (data) {
-      const { data, error } = await supabase
-        .from('users')
-        .insert([{ email: values.email, password: values.password }]);
+      const userid = uuidv4();
+      const { data, error } = await supabase.from('users').insert([
+        {
+          email: values.email,
+          password: values.password,
+          user_id: '73d94240-89b4-4f60-b8e6-37de4b483ec9',
+        },
+      ]);
+      router.push('/login');
     }
   }
 
