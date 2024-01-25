@@ -29,7 +29,7 @@ import * as z from 'zod';
 export default function Login() {
   // Form schema
   const formSchema = z.object({
-    email: z.string().min(2, {
+    email: z.string().email().min(2, {
       message: 'Ugyldig email.',
     }),
     password: z.string().min(2, {
@@ -57,29 +57,15 @@ export default function Login() {
 
   // Submit handler
   async function signInUser(values: z.infer<typeof formSchema>) {
-    try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: values.email,
-        password: values.password,
-      });
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: values.email,
+      password: values.password,
+    });
 
-      if (error) {
-        throw error;
-      } else if (data && data.user.aud === 'authenticated') {
-        router.push('/');
-      } else {
-        console.log('Feil ved login');
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        if (error.message.includes('Email not confirmed')) {
-          setLoginError('Vennligst bekreft kontoen via email som er tilsendt.');
-        } else {
-          console.error(error);
-        }
-      } else {
-        console.error('Caught an exception that was not an Error instance');
-      }
+    if (data.user === null && data.session === null) {
+      setLoginError('Feil brukernavn eller passord.');
+    } else if (data.user && data.session) {
+      router.push('/');
     }
   }
 

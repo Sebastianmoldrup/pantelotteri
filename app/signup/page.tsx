@@ -54,25 +54,28 @@ export default function Login() {
 
   // Handle signup request
   async function signUpNewUser(values: z.infer<typeof formSchema>) {
+    const userid = uuidv4();
     const { data, error } = await supabase.auth.signUp({
       email: values.email,
       password: values.password,
+      user_id: userid,
     });
-    console.log('data:', data);
+    console.log(data);
+    console.log(error);
 
-    if (error) {
-      console.error('Error signing up:', error);
-    } else if (data) {
-      const userid = uuidv4();
-      const { data, error } = await supabase.from('users').insert([
-        {
-          email: values.email,
-          password: values.password,
-          user_id: userid,
-        },
-      ]);
-      router.push('/login');
-    }
+    // if (error) {
+    //   console.error('Error signing up:', error);
+    // } else if (data) {
+    //   const userid = uuidv4();
+    //   const { data, error } = await supabase.from('users').insert([
+    //     {
+    //       email: values.email,
+    //       password: values.password,
+    //       user_id: userid,
+    //     },
+    //   ]);
+    //   router.push('/login');
+    // }
   }
 
   return (

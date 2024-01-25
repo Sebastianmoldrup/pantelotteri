@@ -13,7 +13,7 @@ export default function Home() {
     (async () => {
       const supabase = createClient();
 
-      const session = supabase.auth.session;
+      const session = supabase.auth.session();
 
       const { data, error } = await supabase.auth.getUser();
       console.log(data);
