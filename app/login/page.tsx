@@ -66,19 +66,16 @@ export default function Login() {
       if (error) {
         throw error;
       } else if (data && data.user.aud === 'authenticated') {
+        console.log(data);
         router.push('/');
       } else {
         console.log('Feil ved login');
       }
     } catch (error) {
       if (error instanceof Error) {
-        if (error.message.includes('Email not confirmed')) {
-          setLoginError('Vennligst bekreft kontoen via email som er tilsendt.');
-        } else {
-          console.error(error);
-        }
+        setLoginError(error.message);
       } else {
-        console.error('Caught an exception that was not an Error instance');
+        setLoginError('Ukjent feil');
       }
     }
   }
