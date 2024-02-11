@@ -63,6 +63,9 @@ export default function Login() {
     console.log(data);
     console.log(error);
 
+    if (data.user) {
+    }
+
     // if (error) {
     //   console.error('Error signing up:', error);
     // } else if (data) {

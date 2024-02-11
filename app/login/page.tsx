@@ -62,10 +62,14 @@ export default function Login() {
       password: values.password,
     });
 
-    if (data.user === null && data.session === null) {
-      setLoginError('Feil brukernavn eller passord.');
-    } else if (data.user && data.session) {
-      router.push('/');
+    try {
+      if (data.user === null && data.session === null)
+        setLoginError('Feil brukernavn eller passord.');
+      else if (data.user.aud === 'authenticated') router.push('/');
+      else setLoginError('Vennligst prøv igjen');
+    } catch (error) {
+      if (error instanceof Error) setLoginError(error.message);
+      else setLoginError('Vennligst prøv igjen');
     }
   }
 
